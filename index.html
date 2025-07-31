@@ -1,10 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Project Quack</title>
+    <title>Poll Betting Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to My Game!</h1>
-    <p>Coming soon...</p>
+    <h1>🔥 Poll Betting Game</h1>
+
+    <div id="poll-container">
+        <h2>Which team will win?</h2>
+        <form id="bet-form">
+            <label>Player Name: <input type="text" id="player-name" required></label><br><br>
+            <label><input type="radio" name="option" value="Team Red"> Team Red</label><br>
+            <label><input type="radio" name="option" value="Team Blue"> Team Blue</label><br>
+            <label><input type="radio" name="option" value="Draw"> Draw</label><br><br>
+
+            <label>Bet Amount: <input type="number" id="bet-amount" min="1" max="100" value="10"></label><br><br>
+            <button type="submit">Place Bet</button>
+        </form>
+    </div>
+
+    <div id="player-info">
+        <p><strong>Player:</strong> You</p>
+        <p><strong>Tokens:</strong> <span id="token-balance">100</span></p>
+    </div>
+
+    <h3> Live Bet Distribution</h3>
+    <div id="distribution">
+
+    </div>
+
+    <h3> Bet History </h3>
+    <div id="history-log">
+
+    </div>
+
+
+    <script src="script.js"></script>
+    
+    <audio id="bet-sound" src="chipsdrop.mp3" preload="auto"></audio>
+
+
 </body>
 </html>
