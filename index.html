@@ -8,12 +8,17 @@
     <h1>🔥 Poll Betting Game</h1>
 
     <div id="poll-container">
-        <h2>Which team will win?</h2>
+        <h2 id="poll-questions">Which team will win?</h2>
+
+        <div id = "poll-navigation">
+          <button id="prev-poll-btn">&laquo; Prev</button>
+          <button id="next-poll-btn">Next &raquo;</button>
+        </div>
+        
         <form id="bet-form">
             <label>Player Name: <input type="text" id="player-name" required></label><br><br>
-            <label><input type="radio" name="option" value="Team Red"> Team Red</label><br>
-            <label><input type="radio" name="option" value="Team Blue"> Team Blue</label><br>
-            <label><input type="radio" name="option" value="Draw"> Draw</label><br><br>
+
+            <div id="poll-options"></div>
 
             <label>Bet Amount: <input type="number" id="bet-amount" min="1" max="100" value="10"></label><br><br>
             <button type="submit">Place Bet</button>
@@ -25,21 +30,28 @@
         <p><strong>Tokens:</strong> <span id="token-balance">100</span></p>
     </div>
 
-    <h3> Live Bet Distribution</h3>
-    <div id="distribution">
+    <h3>Live Bet Distribution</h3>
+    <div id="distribution"></div>
 
+    <h3>Bet History</h3>
+    <div id="history-log"></div>
+
+    <h3>Reveal Winner</h3>
+    <div>
+        <button id="reveal-btn"> 🥇🎊🥳 Reveal Winner </button>
     </div>
+    <div id="winner-announcement"></div>
 
-    <h3> Bet History </h3>
-    <div id="history-log">
+    <h3> Leaderboard! </h3>
+    <div id="leaderboard"> </div>
 
-    </div>
-
-
-    <script src="script.js"></script>
-    
     <audio id="bet-sound" src="chipsdrop.mp3" preload="auto"></audio>
 
+    <h3> Reset Game </h3>
+    <div>
+        <button id="reset-btn"> Reset Game </button>
+    </div>
 
+    <script src="script.js"></script>
 </body>
 </html>
