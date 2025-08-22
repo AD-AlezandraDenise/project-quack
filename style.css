@@ -93,3 +93,83 @@ label {
 .bounce {
     animation: bounce 0.5s ease;
 }
+
+#next-round-btn {
+    display: none;
+}
+
+/* This styles the little green circle that represents the payout */
+.payout-animation {
+    position: absolute; /* Allows us to position it precisely */
+    right: 50%; /* Start it in the middle of the screen */
+    bottom: 150px; /* Start it somewhere above the buttons */
+    background-color: #28a745;
+    color: white;
+    padding: 10px;
+    border-radius: 50%; /* Makes it a circle */
+    font-weight: bold;
+    opacity: 0; /* It's completely invisible by default */
+    transform: scale(0); /* It's scaled to zero size by default */
+    pointer-events: none; /* Prevents it from being clickable */
+}
+
+/* This is the actual animation definition */
+@keyframes fly-to-tokens {
+    /* Stage 1: The element appears and grows */
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    /* Stage 2: The element moves up towards the token balance */
+    100% {
+        opacity: 0;
+        transform: scale(0.5) translateY(-200px); /* Adjust -200px if needed */
+    }
+}
+
+/* --- LEADERBOARD STYLES --- */
+
+/* The main container for the leaderboard */
+#leaderboard {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Style for each player's row in the leaderboard */
+.leaderboard-row {
+    display: flex; /* This allows us to align items horizontally */
+    align-items: center; /* This vertically centers items in the row */
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    background-color: #f8f9fa; /* A very light grey for each row */
+    font-size: 16px;
+}
+
+/* Style for the player's rank number (e.g., "#1") */
+.leaderboard-rank {
+    font-weight: bold;
+    color: #495057;
+    margin-right: 15px; /* Space between the rank and the name */
+}
+
+/* Style for the player's name */
+.leaderboard-name {
+    flex-grow: 1; /* This makes the name take up all available space */
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Style for the player's score */
+.leaderboard-score {
+    font-weight: bold;
+    color: #007bff; /* A nice blue for the score */
+}
+
+/* Special styles for the top 3 players */
+.leaderboard-row:nth-child(1) { background-color: #fff3cd; } /* Gold */
+.leaderboard-row:nth-child(2) { background-color: #e9ecef; } /* Silver */
+.leaderboard-row:nth-child(3) { background-color: #f8d7da; } /* Bronze */   
