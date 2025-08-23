@@ -10,13 +10,17 @@
     <div id="poll-container">
         <h2 id="poll-questions">Which team will win?</h2>
 
-        <div id = "poll-navigation">
+        <div id="poll-navigation">
           <button id="prev-poll-btn">&laquo; Prev</button>
           <button id="next-poll-btn">Next &raquo;</button>
         </div>
         
         <form id="bet-form">
-            <label>Player Name: <input type="text" id="player-name" required></label><br><br>
+            <label>Enter Player Name: 
+                <input type="text" id="player-name-input" required list="player-list">
+            </label>
+            <datalist id="player-list"></datalist>
+            <br><br>
 
             <div id="poll-options"></div>
 
@@ -26,9 +30,9 @@
     </div>
 
     <div id="player-info">
-        <p><strong>Player:</strong> You</p>
-        <p><strong>Tokens:</strong> <span id="token-balance">100</span></p>
-        <span id="payout-animation" class="payout-animation"> </span>
+        <p><strong>Active Player:</strong> <span id="active-player-name">None</span></p>
+        <p><strong>Balance:</strong> <span id="active-player-balance">--</span> tokens</p>
+        <span id="payout-animation" class="payout-animation"></span>
     </div>
 
     <h3>Live Bet Distribution</h3>
@@ -40,7 +44,7 @@
     <h3>Reveal Winner</h3>
     <div>
         <button id="reveal-btn"> 🥇🎊🥳 Reveal Winner </button>
-        <button id="next-round-btn"> Next Round &raquo; </button>
+        <button id="next-round-btn">Next Round &raquo;</button>
     </div>
     <div id="winner-announcement"></div>
 

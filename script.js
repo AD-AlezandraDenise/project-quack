@@ -1,7 +1,9 @@
+// --- CORE GAME STATE VARIABLES ---
 let bets = JSON.parse(localStorage.getItem("bets")) || [];
-let tokens = parseInt(localStorage.getItem("tokens")) || 100;
-let playerStats = JSON.parse(localStorage.getItem("playerStats")) || {};
+let players = JSON.parse(localStorage.getItem("players")) || {};
 let gameOver = false;
+let activePlayerName = null;
+let currentPollIndex = parseInt(localStorage.getItem("currentPollIndex")) || 0;
 
 const polls = [
     {
@@ -18,16 +20,45 @@ const polls = [
     }
 ];
 
-// Load the last-used poll index from localStorage, or default to 0
-let currentPollIndex = parseInt(localStorage.getItem("currentPollIndex")) || 0;
+localStorage.setItem("polls", JSON.stringify(polls));
 
-function updateTokenDisplay() {
-    const tokenEl = document.getElementById("token-balance");
-    tokenEl.innerText = tokens;
-    tokenEl.classList.remove("bounce");
-    void tokenEl.offsetWidth;
-    tokenEl.classList.add("bounce");
+// --- PLAYER MANAGEMENT FUNCTIONS ---
+
+function updatePlayerList() {
+    const dataList = document.getElementById("player-list");
+    dataList.innerHTML = "";
+    Object.keys(players).forEach(playerName => {
+        const option = document.createElement("option");
+        option.value = playerName;
+        dataList.appendChild(option);
+    });
 }
+
+function updateActivePlayerDisplay() {
+    const nameEl = document.getElementById("active-player-name");
+    const balanceEl = document.getElementById("active-player-balance");
+    if (activePlayerName && players[activePlayerName]) {
+        nameEl.textContent = activePlayerName;
+        balanceEl.textContent = players[activePlayerName].balance;
+    } else {
+        nameEl.textContent = "None";
+        balanceEl.textContent = "--";
+    }
+}
+
+function setActivePlayer(playerName) {
+    playerName = playerName.trim();
+    if (!playerName) return;
+    if (!players[playerName]) {
+        players[playerName] = { balance: 100, totalWinnings: 0 };
+        updatePlayerList();
+        localStorage.setItem("players", JSON.stringify(players));
+    }
+    activePlayerName = playerName;
+    updateActivePlayerDisplay();
+}
+
+// --- UI RENDERING FUNCTIONS ---
 
 function renderPoll() {
     let currentPoll = polls[currentPollIndex];
@@ -48,47 +79,16 @@ function renderPoll() {
     });
 }
 
-function startNewRound() {
-    bets = [];
-    localStorage.setItem("bets", JSON.stringify(bets));
-    renderDistribution();
-    updateHistoryLog();
-    document.getElementById("winner-announcement").innerHTML = "";
-    gameOver = false;
-}
-
-function getBetSummary() {
-    const summary = {};
-    for (let bet of bets) {
-        const option = bet.option;
-        const amount = bet.amount;
-        if (!summary[option]) summary[option] = 0;
-        summary[option] += amount;
-    }
-    return summary;
-}
-
-function calculateOdds(summary) {
-    const total = Object.values(summary).reduce((a, b) => a + b, 0);
-    const odds = {};
-    for (let option in summary) {
-        odds[option] = total / summary[option];
-    }
-    return odds;
-}
-
 function renderDistribution(winningOption = null) {
     const summary = getBetSummary();
     const odds = calculateOdds(summary);
     const distContainer = document.getElementById("distribution");
     distContainer.innerHTML = "";
     const totalTokens = Object.values(summary).reduce((a, b) => a + b, 0);
-
     if (totalTokens === 0) {
         distContainer.innerHTML = "<p>No bets have been placed yet.</p>";
         return;
     }
-
     for (let option in summary) {
         const percent = ((summary[option] / totalTokens) * 100).toFixed(1);
         const odd = odds[option].toFixed(2);
@@ -118,32 +118,28 @@ function updateHistoryLog() {
 function renderLeaderboard() {
     const leaderboardEl = document.getElementById("leaderboard");
     leaderboardEl.innerHTML = "";
-    const sortedPlayers = Object.entries(playerStats).sort((a, b) => b[1] - a[1]);
-
-    if (sortedPlayers.length === 0) {
+    const sortedPlayers = Object.entries(players)
+        .map(([name, data]) => ({ name, score: data.totalWinnings }))
+        .sort((a, b) => b.score - a.score);
+    if (sortedPlayers.length === 0 || sortedPlayers.every(p => p.score === 0)) {
         leaderboardEl.innerHTML = "<p>No players on the leaderboard yet.</p>";
         return;
     }
-
-    sortedPlayers.forEach(([name, score], index) => {
+    sortedPlayers.forEach(({ name, score }, index) => {
         const row = document.createElement("div");
         row.classList.add("leaderboard-row");
-
         const rank = document.createElement("span");
         rank.classList.add("leaderboard-rank");
         if (index === 0) rank.textContent = "🥇 #1";
         else if (index === 1) rank.textContent = "🥈 #2";
         else if (index === 2) rank.textContent = "🥉 #3";
         else rank.textContent = `#${index + 1}`;
-
         const nameEl = document.createElement("span");
         nameEl.classList.add("leaderboard-name");
         nameEl.textContent = name;
-
         const scoreEl = document.createElement("span");
         scoreEl.classList.add("leaderboard-score");
         scoreEl.textContent = `${score} tokens`;
-
         row.appendChild(rank);
         row.appendChild(nameEl);
         row.appendChild(scoreEl);
@@ -151,31 +147,12 @@ function renderLeaderboard() {
     });
 }
 
-function calculateAndPayWinners() {
-    const currentPoll = polls[currentPollIndex];
-    const options = currentPoll.options;
-    const winningOption = options[Math.floor(Math.random() * options.length)];
-    const summary = getBetSummary();
-    const odds = calculateOdds(summary);
-    let winners = [];
-    let totalWinnings = 0;
-
-    for (let bet of bets) {
-        if (bet.option === winningOption) {
-            const payout = Math.floor(bet.amount * odds[winningOption]);
-            tokens += payout;
-            totalWinnings += payout;
-            if (!playerStats[bet.player]) {
-                playerStats[bet.player] = 0;
-            }
-            playerStats[bet.player] += payout;
-            winners.push(`${bet.player} won ${payout} tokens!`);
-        }
-    }
-
-    localStorage.setItem("playerStats", JSON.stringify(playerStats));
-    localStorage.setItem("tokens", tokens.toString());
-    return { winningOption, winners, totalWinnings };
+function updateTokenDisplay() {
+    updateActivePlayerDisplay();
+    const balanceEl = document.getElementById("active-player-balance");
+    balanceEl.classList.remove("bounce");
+    void balanceEl.offsetWidth;
+    balanceEl.classList.add("bounce");
 }
 
 function showPayoutAnimation(totalWinnings) {
@@ -188,19 +165,88 @@ function showPayoutAnimation(totalWinnings) {
     }, { once: true });
 }
 
+// --- GAME LOGIC FUNCTIONS ---
+
+function startNewRound() {
+    bets = [];
+    localStorage.setItem("bets", JSON.stringify(bets));
+    renderDistribution();
+    updateHistoryLog();
+    document.getElementById("winner-announcement").innerHTML = "";
+    gameOver = false;
+}
+
+function getBetSummary() {
+    const summary = {};
+    for (let bet of bets) {
+        if (!summary[bet.option]) summary[bet.option] = 0;
+        summary[bet.option] += bet.amount;
+    }
+    return summary;
+}
+
+function calculateOdds(summary) {
+    const total = Object.values(summary).reduce((a, b) => a + b, 0);
+    const odds = {};
+    for (let option in summary) {
+        odds[option] = total / summary[option];
+    }
+    return odds;
+}
+
+function calculateAndPayWinners() {
+    const savedWinner =JSON.parse(localStorage.getItem("winningAnswer"));
+    const currentPoll = polls[currentPollIndex];
+    let winningOption = null;
+
+    if(savedWinner && savedWinner.question === currentPoll.question) {
+        winningOption = savedWinner.answer;
+        localStorage.removeItem("winningAnswer");}
+        else {
+            alert("Host error: No winning answer has been set for this poll from the Admin Panel. Please set a winner and try again.");
+            return { error: true};
+        }
+
+    const summary = getBetSummary();
+    const odds = calculateOdds(summary);
+    let winners = [];
+    let totalWinnings = 0;
+
+    for (let bet of bets) {
+        if (bet.option === winningOption) {
+            const payout = Math.floor(bet.amount * odds[winningOption]);
+            if (players[bet.player]) {
+                players[bet.player].balance += payout;
+                players[bet.player].totalWinnings += payout;
+            }
+            totalWinnings += payout;
+            winners.push(`${bet.player} won ${payout} tokens!`);
+        }
+    }
+
+    localStorage.setItem("players", JSON.stringify(players));
+    return { winningOption, winners, totalWinnings };
+
+}
+
+// --- EVENT LISTENERS ---
+
+document.getElementById("player-name-input").addEventListener("change", (e) => {
+    setActivePlayer(e.target.value);
+});
+
 document.getElementById("bet-form").addEventListener("submit", function (e) {
     e.preventDefault();
     if (gameOver) {
         alert("Round is over. Please reset the game to play again.");
         return;
     }
-    const playerName = document.getElementById("player-name").value.trim();
-    const selectedOption = document.querySelector('input[name="option"]:checked');
-    const betAmount = parseInt(document.getElementById("bet-amount").value);
-    if (!playerName) {
-        alert("Enter your name homie");
+    if (!activePlayerName) {
+        alert("Please enter a player's name before placing a bet.");
         return;
     }
+    const selectedOption = document.querySelector('input[name="option"]:checked');
+    const betAmount = parseInt(document.getElementById("bet-amount").value);
     if (!selectedOption) {
         alert("Please choose an option to bet on!");
         return;
@@ -209,23 +255,23 @@ document.getElementById("bet-form").addEventListener("submit", function (e) {
         alert("Please enter a valid bet amount.");
         return;
     }
-    if (betAmount > tokens) {
-        alert("You don't have enough tokens to make this bet!");
+    if (betAmount > players[activePlayerName].balance) {
+        alert(`${activePlayerName} does not have enough tokens for this bet!`);
         return;
     }
-    const option = selectedOption.value;
-    bets.push({ player: playerName, option: option, amount: betAmount });
-    tokens -= betAmount;
+    bets.push({ player: activePlayerName, option: selectedOption.value, amount: betAmount });
+    players[activePlayerName].balance -= betAmount;
     localStorage.setItem("bets", JSON.stringify(bets));
-    localStorage.setItem("tokens", tokens.toString());
+    localStorage.setItem("players", JSON.stringify(players));
     updateTokenDisplay();
     renderDistribution();
     updateHistoryLog();
     const betSound = document.getElementById("bet-sound");
     betSound.currentTime = 0;
     betSound.play();
-    alert(`Bet placed: ${betAmount} tokens on "${option}" by ${playerName}`);
-    document.getElementById("bet-form").reset();
+    alert(`Bet placed: ${betAmount} tokens on "${selectedOption.value}" by ${activePlayerName}`);
+    document.getElementById("bet-amount").value = 10;
+    if (selectedOption) selectedOption.checked = false;
 });
 
 document.getElementById("reveal-btn").addEventListener("click", function () {
@@ -241,9 +287,15 @@ document.getElementById("reveal-btn").addEventListener("click", function () {
     document.getElementById("reveal-btn").style.display = "none";
     const announce = document.getElementById("winner-announcement");
     announce.innerHTML = "<h3>Picking a winner...</h3>";
-
     setTimeout(() => {
         const results = calculateAndPayWinners();
+        if (results.error) {
+            gameOver = false; // The round isn't over yet
+            document.getElementById("reveal-btn").style.display = "inline-block";
+            document.getElementById("winner-announcement").innerHTML = "";
+            return;
+        }
+        
         showPayoutAnimation(results.totalWinnings);
         renderDistribution(results.winningOption);
         updateTokenDisplay();
@@ -269,16 +321,6 @@ document.getElementById("next-round-btn").addEventListener("click", function() {
     document.getElementById("next-round-btn").style.display = "none";
 });
 
-document.getElementById("prev-poll-btn").addEventListener("click", function() {
-    currentPollIndex--;
-    if (currentPollIndex < 0) {
-        currentPollIndex = polls.length - 1;
-    }
-    localStorage.setItem("currentPollIndex", currentPollIndex.toString());
-    renderPoll();
-    startNewRound();
-});
-
 document.getElementById("next-poll-btn").addEventListener("click", function() {
     currentPollIndex++;
     if (currentPollIndex >= polls.length) {
@@ -289,30 +331,45 @@ document.getElementById("next-poll-btn").addEventListener("click", function() {
     startNewRound();
 });
 
+document.getElementById("prev-poll-btn").addEventListener("click", function() {
+    currentPollIndex--;
+    if (currentPollIndex < 0) {
+        currentPollIndex = polls.length - 1;
+    }
+    localStorage.setItem("currentPollIndex", currentPollIndex.toString());
+    renderPoll();
+    startNewRound();
+});
+
 document.getElementById("reset-btn").addEventListener("click", function () {
     const confirmReset = confirm("Are you sure you want to reset the game?");
     if (!confirmReset) return;
     bets = [];
-    tokens = 100;
+    players = {};
     gameOver = false;
-    playerStats = {};
-    currentPollIndex = 0; // Also reset the poll index on full reset
+    activePlayerName = null;
+    currentPollIndex = 0;
     localStorage.setItem("bets", JSON.stringify(bets));
-    localStorage.setItem("tokens", tokens.toString());
-    localStorage.setItem("playerStats", JSON.stringify(playerStats));
-    localStorage.setItem("currentPollIndex", "0"); // And clear it from memory
-    updateTokenDisplay();
+    localStorage.setItem("players", JSON.stringify(players));
+    localStorage.setItem("currentPollIndex", "0");
+    updateActivePlayerDisplay();
+    updatePlayerList();
     renderDistribution();
     updateHistoryLog();
     renderLeaderboard();
-    renderPoll(); // Re-render the first poll
+    renderPoll();
     document.getElementById("winner-announcement").innerHTML = "";
     alert("Game has been reset!");
 });
 
-// Initial Render Calls
-updateTokenDisplay();
-renderDistribution();
-updateHistoryLog();
-renderLeaderboard();
-renderPoll();
+// --- INITIAL PAGE LOAD ---
+function initializeGame() {
+    updatePlayerList();
+    updateActivePlayerDisplay();
+    renderPoll();
+    renderDistribution();
+    updateHistoryLog();
+    renderLeaderboard();
+}
+
+initializeGame(); // Run all initial render functions
