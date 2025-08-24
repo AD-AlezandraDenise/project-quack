@@ -5,20 +5,7 @@ let gameOver = false;
 let activePlayerName = null;
 let currentPollIndex = parseInt(localStorage.getItem("currentPollIndex")) || 0;
 
-const polls = [
-    {
-        question: "Which team will win the finals?",
-        options: ["Team Red", "Team Blue", "Draw"]
-    },
-    {
-        question: "Which feature should we build next?",
-        options: ["Token Shop", "Player Avatars", "New Animations"]
-    },
-    {
-        question: "Best programming language for beginners?",
-        options: ["JavaScript", "Python", "Hard to say!"]
-    }
-];
+const polls = JSON.parse(localStorage.getItem("polls")) || [];
 
 localStorage.setItem("polls", JSON.stringify(polls));
 

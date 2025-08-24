@@ -9,6 +9,44 @@
     <h1>⚙️ Admin Control Panel</h1>
 
     <a href="index.html" style="margin-bottom: 20px; display: inline-block;">&laquo; Back to the Main Game</a>
+    <hr style="margin:30px 0;">
+    <h2>Create a New Poll</h2>
+    <form id="create-poll-form">
+    <label for="poll-question"><strong>Question:</strong></label><br>
+    <textarea id="poll-question" rows="3" style="width: 95%;" required></textarea>
+    <br><br>
+
+    <label><strong>Answer Options (at least 2 are required):</strong></label><br>
+    <input type="text" id="poll-option-1" placeholder="Answer 1" required>
+    <input type="text" id="poll-option-2" placeholder="Answer 2" required>
+    <input type="text" id="poll-option-3" placeholder="Answer 3 (optional)">
+    <input type="text" id="poll-option-4" placeholder="Answer 4 (optional)">
+    <input type="text" id="poll-option-5" placeholder="Answer 5 (optional)">
+    <input type="text" id="poll-option-6" placeholder="Answer 6 (optional)">
+    <br><br>
+    
+    <button type="submit">💾 Save New Poll</button>
+</form>
+
+<hr style="margin: 30px 0;">
+
+<h2>Game Settings</h2>
+<form id="settings-form">
+    <label for="lobby-timer"><strong>Lobby Timer (minutes):</strong> 
+        <input type="number" id="lobby-timer" value="10" min="1">
+    </label>
+    <br><br>
+
+    <label for="question-timer"><strong>Question Timer (seconds):</strong> 
+        <input type="number" id="question-timer" value="30" min="5">
+    </label>
+    <br><br>
+
+    <button type="submit">💾 Save Settings</button>
+</form>
+
+<hr style="margin: 30px 0;">
+
 
     <h2>Set the Winning Answer</h2>
     <p>Choose a poll and then click the correct answer to set it as the winner for the current round.</p>
