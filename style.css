@@ -1,38 +1,43 @@
 body {
-    font-family: Arial, sans-serif;
-    max-width: 600px;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 1200px;
     margin: 30px auto;
-    background: #f9f9f9;
+    background: #f2f2f2;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    color: #333;
 }
 
 h1 {
-    font-size: 28px;
+    font-size: 2.5em;
+    font-weight: 700;
     color: #222;
 }
 
 h2, h3 {
     color: #444;
     margin-top: 30px;
+    font-weight: 700;
 }
 
 input[type="text"],
 input[type="number"] {
-    padding: 6px 10px;
-    border-radius: 5px;
+    padding: 8px 12px;
+    border-radius: 6px;
     border: 1px solid #ccc;
     margin-top: 5px;
+    font-size: 1em;
 }
 
 button {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border: none;
     background-color: #0077cc;
     color: white;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
 }
 
 button:hover {
@@ -42,32 +47,180 @@ button:hover {
 label {
     display: block;
     margin: 10px 0;
+    font-weight: bold;
+}
+
+#game-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    text-align: left;
+    align-items: stretch;
+}
+
+#game-container > section {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+}
+
+#column-ranking { flex: 1; }
+#column-action { flex: 2; }
+#column-info { flex: 1.5; }
+
+#column-action {
+    justify-content: center;
+}
+
+#poll-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#poll-questions {
+    font-size: 1.8em;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#poll-navigation {
+    margin: 10px 0 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#poll-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.answer-option {
+    padding: 25px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.answer-option:hover {
+    transform: scale(1.03);
+}
+
+.answer-option.selected {
+    border: 5px solid yellow;
+    box-shadow: 0 0 15px yellow;
+}
+
+.option-red { background-color: #E21B3C; }
+.option-blue { background-color: #1368CE; }
+.option-yellow { background-color: #D89E00; }
+.option-green { background-color: #26890C; }
+.option-orange { background-color: #f58231; }
+.option-purple { background-color: #911eb4; }
+
+#host-controls {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    margin-top: 20px;
+}
+
+#player-info {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+#player-info p {
+    margin: 5px 0;
+}
+
+#active-player-name {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 1.2em;
+}
+
+#active-player-balance {
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    margin: 0;
+    flex-basis: 70px;
+    text-align: right;
+}
+
+.form-row input {
+    flex-grow: 1;
+}
+
+#bet-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
 }
 
 #distribution div {
     margin-bottom: 5px;
-    padding: 6px;
+    padding: 8px;
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
+.winning-option {
+    background-color: #d4edda !important;
+    border: 2px solid #28a745;
+    color: #155724;
+    font-weight: bold;
+    transform: scale(1.03);
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
+    transition: all 0.3s ease;
+}
+
 #history-log {
     max-height: 200px;
     overflow-y: auto;
-    background: #fff;
+    background: #f8f9fa;
     border: 1px solid #ccc;
     padding: 10px;
     margin-top: 10px;
     border-radius: 6px;
     font-size: 14px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 #history-log div {
     padding: 6px 8px;
     margin-bottom: 6px;
-    background: #f1f1f1;
+    background: #e9ecef;
     border-radius: 5px;
 }
 
@@ -81,95 +234,113 @@ label {
     display: inline-block;
 }
 
-/* 🔄 BOUNCE ANIMATION */
-@keyframes bounce {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.15); }
-    50% { transform: scale(0.95); }
-    75% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.bounce {
-    animation: bounce 0.5s ease;
-}
-
-#next-round-btn {
-    display: none;
-}
-
-/* This styles the little green circle that represents the payout */
-.payout-animation {
-    position: absolute; /* Allows us to position it precisely */
-    right: 50%; /* Start it in the middle of the screen */
-    bottom: 150px; /* Start it somewhere above the buttons */
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    border-radius: 50%; /* Makes it a circle */
-    font-weight: bold;
-    opacity: 0; /* It's completely invisible by default */
-    transform: scale(0); /* It's scaled to zero size by default */
-    pointer-events: none; /* Prevents it from being clickable */
-}
-
-/* This is the actual animation definition */
-@keyframes fly-to-tokens {
-    /* Stage 1: The element appears and grows */
-    0% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-    /* Stage 2: The element moves up towards the token balance */
-    100% {
-        opacity: 0;
-        transform: scale(0.5) translateY(-200px); /* Adjust -200px if needed */
-    }
-}
-
-/* --- LEADERBOARD STYLES --- */
-
-/* The main container for the leaderboard */
 #leaderboard {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 10px;
     background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* Style for each player's row in the leaderboard */
 .leaderboard-row {
-    display: flex; /* This allows us to align items horizontally */
-    align-items: center; /* This vertically centers items in the row */
+    display: flex;
+    align-items: center;
     padding: 8px 12px;
     margin-bottom: 6px;
     border-radius: 6px;
-    background-color: #f8f9fa; /* A very light grey for each row */
+    background-color: #f8f9fa;
     font-size: 16px;
 }
+.leaderboard-rank { font-weight: bold; color: #495057; margin-right: 15px; }
+.leaderboard-name { flex-grow: 1; font-weight: bold; color: #343a40; }
+.leaderboard-score { font-weight: bold; color: #007bff; }
+.leaderboard-row:nth-child(1) { background-color: #fff3cd; }
+.leaderboard-row:nth-child(2) { background-color: #e9ecef; }
+.leaderboard-row:nth-child(3) { background-color: #f8d7da; }
 
-/* Style for the player's rank number (e.g., "#1") */
-.leaderboard-rank {
-    font-weight: bold;
-    color: #495057;
-    margin-right: 15px; /* Space between the rank and the name */
+#timer-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-/* Style for the player's name */
-.leaderboard-name {
-    flex-grow: 1; /* This makes the name take up all available space */
+#timer-display {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #333;
+    color: white;
+    font-size: 3em;
     font-weight: bold;
-    color: #343a40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px solid #555;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Style for the player's score */
-.leaderboard-score {
-    font-weight: bold;
-    color: #007bff; /* A nice blue for the score */
+.reveal-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px; 
+    margin-top: 10px;
 }
 
-/* Special styles for the top 3 players */
-.leaderboard-row:nth-child(1) { background-color: #fff3cd; } /* Gold */
-.leaderboard-row:nth-child(2) { background-color: #e9ecef; } /* Silver */
-.leaderboard-row:nth-child(3) { background-color: #f8d7da; } /* Bronze */   
+.admin-container {
+    max-width: 800px; 
+    margin: 0 auto; 
+    background: #ffffff;
+    padding: 20px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    text-align: left;
+}
+
+.selected-winner {
+    filter: brightness(85%);
+    border: 4px solid #333;
+    transform: scale(1.05);
+}
+
+.admin-container h2 {
+    text-align: center;
+    font-size: 1.8em;
+}
+
+.admin-container form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+
+.admin-container label {
+    text-align: left;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.admin-container textarea,
+.admin-container input {
+    width: 95%;
+    font-size: 1.2em !important; 
+    padding: 12px !important; 
+}
+
+#create-poll-form input[type="text"] {
+    display: inline-block;
+    width: 48%; 
+    margin-bottom: 10px;
+}
+
+.admin-container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.2em;
+}
+
+@keyframes bounce { 0% { transform: scale(1); } 25% { transform: scale(1.15); } 50% { transform: scale(0.95); } 75% { transform: scale(1.05); } 100% { transform: scale(1); } }
+.bounce { animation: bounce 0.5s ease; }
+
+.payout-animation { position: absolute; right: 50%; bottom: 150px; background-color: #28a745; color: white; padding: 10px; border-radius: 50%; font-weight: bold; opacity: 0; transform: scale(0); pointer-events: none; }
+@keyframes fly-to-tokens { 0% { opacity: 1; transform: scale(1) translateY(0); } 100% { opacity: 0; transform: scale(0.5) translateY(-200px); } }
+

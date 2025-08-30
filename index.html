@@ -7,57 +7,74 @@
 <body>
     <h1>🔥 Poll Betting Game</h1>
 
-    <div id="poll-container">
-        <h2 id="poll-questions">Which team will win?</h2>
+    <main id="game-container">
 
-        <div id="poll-navigation">
-          <button id="prev-poll-btn">&laquo; Prev</button>
-          <button id="next-poll-btn">Next &raquo;</button>
-        </div>
-        
-        <form id="bet-form">
-            <label>Enter Player Name: 
-                <input type="text" id="player-name-input" required list="player-list">
-            </label>
-            <datalist id="player-list"></datalist>
-            <br><br>
+        <!-- ranking-->
+        <section id="column-ranking">
+            <h3>Leaderboard!</h3>
+            <div id="leaderboard"></div>
+            <h3>Reset Game</h3>
+            <div>
+                <button id="reset-btn"> Reset Game </button>
+            </div>
+        </section>
 
-            <div id="poll-options"></div>
+        <!-- action-->
+        <section id="column-action">
+            <div id="poll-container">
+                <h2 id="poll-questions">Which team will win?</h2>
+                <div id="poll-navigation">
+                    <button id="prev-poll-btn">&laquo; Prev</button>
+                    <button id="next-poll-btn">Next &raquo;</button>
+                </div>
+                <div id="poll-options"></div>
+            </div>
+            
+            <!--host control panel-->
+            <div id="host-controls">
+                <div id="player-info">
+                    <p><strong>Active Player:</strong> <span id="active-player-name">None</span></p>
+                    <p><strong>Balance:</strong> <span id="active-player-balance">--</span> tokens</p>
+                    <span id="payout-animation" class="payout-animation"></span>
+                </div>
+                <form id="bet-form">
+                    <div class="form-row">
+                        <label for="player-name-input">Player:</label>
+                        <input type="text" id="player-name-input" required list="player-list" placeholder="Enter name...">
+                    </div>
+                    <datalist id="player-list"></datalist>
 
-            <label>Bet Amount: <input type="number" id="bet-amount" min="1" max="100" value="10"></label><br><br>
-            <button type="submit">Place Bet</button>
-        </form>
-    </div>
+                    <div class="form-row">
+                        <label for="bet-amount">Bet:</label>
+                        <input type="number" id="bet-amount" min="1" value="10">
+                    </div>
+                    
+                    <button type="submit">Place Bet</button>
+                </form>
+            </div>
+        </section>
 
-    <div id="player-info">
-        <p><strong>Active Player:</strong> <span id="active-player-name">None</span></p>
-        <p><strong>Balance:</strong> <span id="active-player-balance">--</span> tokens</p>
-        <span id="payout-animation" class="payout-animation"></span>
-    </div>
+        <!--live info -->
+        <section id="column-info">
+            <div id="timer-container">
+                <div id="timer-display">30</div>
+            </div>
+            <h3>Live Bet Distribution</h3>
+            <div id="distribution"></div>
+            <h3>Bet History</h3>
+            <div id="history-log"></div>
+            <h3>Reveal Winner</h3>
+            <div class="reveal-controls">
+                <button id="reveal-btn"> 🥇 Reveal Winner </button>
+                <button id="next-round-btn">Next Round &raquo;</button>
+            </div>
+            <div id="winner-announcement"></div>
+        </section>
 
-    <h3>Live Bet Distribution</h3>
-    <div id="distribution"></div>
-
-    <h3>Bet History</h3>
-    <div id="history-log"></div>
-
-    <h3>Reveal Winner</h3>
-    <div>
-        <button id="reveal-btn"> 🥇🎊🥳 Reveal Winner </button>
-        <button id="next-round-btn">Next Round &raquo;</button>
-    </div>
-    <div id="winner-announcement"></div>
-
-    <h3> Leaderboard! </h3>
-    <div id="leaderboard"> </div>
+    </main>
 
     <audio id="bet-sound" src="chipsdrop.mp3" preload="auto"></audio>
-
-    <h3> Reset Game </h3>
-    <div>
-        <button id="reset-btn"> Reset Game </button>
-    </div>
-
+    <script src="timer.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
